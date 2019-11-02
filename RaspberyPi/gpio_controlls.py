@@ -5,18 +5,16 @@ from multiprocessing.pool import ThreadPool
 
 class gpio_controlls:
 
-    def __init__(self, forwardbackward, rightleft, int1, int2, en, servo, natocenie_old, natocenie_new, posledne_natocenie):
-        
-        self.forwardbackward = forwardbackward
-        self.rightleft = rightleft
+    def __init__(self, int1, int2, en, servo):
+
         self.int1 = int1  
         self.int2 = int2  
         self.en = en  
-        self.servo = servo  
-        self.natocenie_old = natocenie_old
-        self.natocenie_new = natocenie_new
-        self.posledne_natocenie = posledne_natocenie
-        print(self.forwardbackward, self.rightleft)
+        self.servo = servo
+        self.natocenie_old = 0
+        self.natocenie_new = 0
+        self.posledne_natocenie = 6    
+        
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.int1,GPIO.OUT)
@@ -35,7 +33,9 @@ class gpio_controlls:
         self.natocenie_old = self.natocenie_new
         self.natocenie_new = self.rightleft
         self.state = state
-        self.posun = round(self.rightleft*1.176, 0)+1400      
+        self.posun = round(self.rightleft*1.176, 0)+1400
+  
+   
         
         #forward
         if self.forwardbackward > 0:
@@ -78,4 +78,4 @@ class gpio_controlls:
             GPIO.output(self.int1,GPIO.LOW)
             GPIO.output(self.int2,GPIO.LOW)
           
-        print(self.forwardbackward, self.rightleft, self.state, self.natocenie_old, self.natocenie_new, self.posledne_natocenie)
+        print(self.forwardbackward, self.rightleft, self.state, self.natocenie_old, self.natocenie_new, self.posledne_natocenie, self.state)

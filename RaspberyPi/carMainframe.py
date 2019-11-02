@@ -1,19 +1,19 @@
 import socket
 import time
+import threading
 from gpio_controlls import gpio_controlls
 from multiprocessing.pool import ThreadPool
-import threading
-#k
-val = [0]
-secVal = [0]
-controll = gpio_controlls(0,0,24,23,25,4,0,0,6)
+
+count = [0]
+reset = [0]
+controll = gpio_controlls(24,23,25,4)
 
 def counter():
     while (True):
         time.sleep(0.1)
-        val[0] += 1
-        if (val[0] == 20):
-            secVal[0] = 1
+        count[0] += 1
+        if (count[0] == 20):
+            reset[0] = 1
 
 def udp_server(host='192.168.1.33', port=50000):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -35,18 +35,13 @@ for data in udp_server():
     int_rightleft = int(rightleft)
 
     hodnota = int_rightleft
-    print(int_forwardbackward,int_rightleft)
 
-    if (secVal[0] == 1):
-        controll.setValues(int_forwardbackward,int_rightleft,1)
-        #val[0] = 0
-        print("a")
-        secVal[0] = 0
+    if (reset[0] == 1):
+        state = 1
+        reset[0] = 0
     else:
-        controll.setValues(int_forwardbackward,int_rightleft,0)
-        print("b")
-
+        state = 0
     if  int_rightleft != 0:
-        val[0] = 0
-        print("c")
+        count[0] = 0
 
+    controll.setValues(int_forwardbackward,int_rightleft,state)
